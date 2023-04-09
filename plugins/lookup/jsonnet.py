@@ -42,6 +42,11 @@ RETURN: Final = """
 """
 
 
+class JSONEncoder(AnsibleJSONEncoder):
+    def __init__(self, **kwargs: Any):
+        super().__init__(vault_to_text=True, **kwargs)
+
+
 class LookupModule(LookupBase):
     """A plugin that evaluates Jsonnet files."""
 
@@ -90,7 +95,7 @@ class LookupModule(LookupBase):
             if relative_path == _ANSIBLE_FACTS:
                 return (
                     relative_path,
-                    json.dumps(variables, cls=AnsibleJSONEncoder, indent=4).encode(),
+                    json.dumps(variables, cls=JSONEncoder, indent=4).encode(),
                 )
             return self._import_callback(directory, relative_path)
 
